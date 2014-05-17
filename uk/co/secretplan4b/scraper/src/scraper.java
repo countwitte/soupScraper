@@ -82,6 +82,10 @@ public class scraper {
 					}
 					// change quotes to ' to avoid csv confusion 
 					body = body.replaceAll("\"","'");
+					intro = intro.replaceAll("\"","'");
+					// also remove commas
+					body = body.replaceAll(",", "");
+					intro = intro.replaceAll(",", "");
 					try {
 						q.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n",title,author,date,intro,body);
 					} catch (Exception e) {
