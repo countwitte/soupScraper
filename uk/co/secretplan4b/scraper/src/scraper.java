@@ -4,7 +4,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 import org.jsoup.Jsoup;
@@ -39,14 +38,14 @@ public class scraper {
 		try {
 			doc = Jsoup.connect("http://yesscotland.net/").get();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// can't connect to url
+			System.out.println("Error: Could not conect to "+"http://yesscotland.net/");
 			e.printStackTrace();
 		}
 		// find the format for page links 
 		Elements pages = doc.getElementsByClass("pager-item");
 		Element plink = pages.get(0).select("a").first();
 		String p = plink.absUrl("href").substring(0, (plink.absUrl("href").length()-1));
-		System.out.println(p);
 		Document page = null;
 		int j = 0;
 		// for each page (there are 130) TODO automate no. of pages?
@@ -81,6 +80,8 @@ public class scraper {
 					if (body.isEmpty()) {
 						body = story.getElementsByClass("field-name-body").text();
 					}
+					// change quotes to ' to avoid csv confusion 
+					body = body.replaceAll("\"","'");
 					try {
 						q.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n",title,author,date,intro,body);
 					} catch (Exception e) {
@@ -97,5 +98,6 @@ public class scraper {
 		}
 		// close printwriter
 		q.close();
+		System.out.println("Scrape successful");
 	}
 }
